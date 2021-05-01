@@ -11,12 +11,14 @@ const connection = mysql.createConnection({
 
   // Be sure to update with your own MySQL password!
   password: 'Lazycowmoo2121!!',
-  database: '',
+  database: 'employees',
 });
 
 // Connect to the DB
 connection.connect((err) => {
     if (err) throw err;
     console.log(`connected as id ${connection.threadId}\n`);
-    createProduct();
+
   });
+
+  module.exports = connection
