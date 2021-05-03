@@ -4,12 +4,12 @@ CREATE DATABASE employees;
 
 USE employees;
 
-CREATE TABLE department (
+CREATE TABLE `department` (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL
 );
 
-CREATE TABLE role (
+CREATE TABLE `role` (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(50) UNIQUE NOT NULL,
     salary DECIMAL UNSIGNED NOT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE role (
     FOREIGN KEY (department_id) REFERENCES department(id)
 );
 
-CREATE TABLE employee (
+CREATE TABLE `employee` (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR (50) NOT NULL,
     last_name VARCHAR (50) NOT NULL,
