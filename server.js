@@ -107,7 +107,7 @@ const viewEmployees = () => {
 };
 
 const employeesByRole = () => {
-  const query = "`SELECT employee.id, employee.first_name, employee.last_name, FROM employee LEFT JOIN role ON role.id = employee.role_id LEFT JOIN department ON department.id = role.department_id;`";
+  const query = `SELECT employee.id, employee.first_name, employee.last_name, FROM employee LEFT JOIN role ON role.id = employee.role_id LEFT JOIN department ON department.id = role.department_id;`;
   connection.query(query, (err, res) => {
     if (err) throw err;
     console.table(res)
@@ -230,14 +230,31 @@ const updateEmployeeRole = () => {
 };
 
 const updateEmployeeManager = () => {
-
-
-};
+  
+  const query = connection.query(
+    'UPDATE managers SET ? WHERE ?',
+    
+    (err, res) => {
+      if (err) throw err;
+      console.log(`${res.affectedRows} managers updated!\n`);
+      // Call deleteProduct AFTER the UPDATE completes
+      deleteProduct();
+    }),
+  };
 
 const updateEmployeeDepartment = () => {
+  const query = connection.query(
+    'UPDATE department SET ? WHERE ?',
+    
+    (err, res) => {
+      if (err) throw err;
+      console.log(`${res.affectedRows} managers updated!\n`);
+      // Call deleteProduct AFTER the UPDATE completes
+      deleteProduct();
+    }),
+  };
 
 
-};
 
 const budget = () => {
 
@@ -245,21 +262,31 @@ const budget = () => {
 };
 
 const removeEmployee = () => {
-  connection.query(`DELETE FROM employees WHERE `, (err, res) => {
+  connection.query(`DELETE FROM employees WHERE ?`, (err, res) => {
     if (err) throw err;
-    console.log(`${res.affectedRows} products deleted!\n`);
+    console.log(`${res.affectedRows} product has been deleted!\n`);
     // Call readProducts AFTER the DELETE completes
   });
   runSearch();
 };
 
 const removeRole = () => {
-
+  connection.query(`DELETE FROM roles WHERE ?`, (err, res) => {
+    if (err) throw err;
+    console.log(`${res.affectedRows} roles has been deleted!\n`);
+    // Call readProducts AFTER the DELETE completes
+  });
+  runSearch();
 
 };
 
 const removeDepartment = () => {
-
+  connection.query(`DELETE FROM department WHERE ?`, (err, res) => {
+    if (err) throw err;
+    console.log(`${res.affectedRows} department has been deleted!\n`);
+    // Call readProducts AFTER the DELETE completes
+  });
+  runSearch();
 
 };
 
