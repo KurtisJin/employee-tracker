@@ -107,7 +107,7 @@ const viewEmployees = () => {
 };
 
 const employeesByRole = () => {
-  const query = `SELECT employee.id, employee.first_name, employee.last_name, FROM employee LEFT JOIN role ON role.id = employee.role_id LEFT JOIN department ON department.id = role.department_id;`;
+  const query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name FROM employee LEFT JOIN role ON role.id = employee.role_id LEFT JOIN department ON department.id = role.department_id;";
   connection.query(query, (err, res) => {
     if (err) throw err;
     console.table(res)
@@ -125,7 +125,7 @@ const employeeByDept = () => {
 };
 
 const employeeByManager = () => {
-  const query = `SELECT manager.name, employee.first_name, employee.last_name FROM employee` ;
+  const query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, manager_id FROM employee LEFT JOIN role ON role.id = employee.role_id LEFT JOIN department ON department.id = role.department_id"; 
   connection.query(query, (err, res) => {
     if (err) throw err;
     console.table(res)
@@ -156,15 +156,21 @@ const addEmployee = () => {
         name: "managerID",
         type: "input",
         message: "What is the Employees Manager ID?",
-      }
+      },
+      // {
+      //   name: "managerID",
+      //   type: "input",
+      //   message: "What is the Employees Manager ID?",
+      //   choices: [{name: 'engineering', value: 4}]
+      // }
     ])
     .then((answer) => {
-      console.log(answer);
+      // console.log(answer);
       let firstName = answer.firstName;
       let lastName = answer.lastName;
       let roleName = answer.roleName;
       let managerID = answer.managerID;
-      const query = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${firstName}', '${lastName}', '${roleName}', '${managerID}')`;
+      const query = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUE ('${firstName}', '${lastName}', '${roleName}', '${managerID}')`;
       connection.query(query, (err, res) => {
         if (err) throw err;
         console.table(res);
@@ -180,19 +186,14 @@ const addRole = () => {
   inquirer
     .prompt([
       {
-        name: "addRole",
-        type: "input",
-        message: "What is the Role you would like to add?",
-      },
-      {
         name: "addTitle",
         type: "input",
-        message: "What is the Title you would like to add?",
+        message: "What is the Title of the Role you would like to add?",
       },
       {
         name: "addSalary",
         type: "input",
-        message: "What is the TSalary you would like to add?",
+        message: "What is the Salary you would like to add?",
       },
       {
         name: "addDepartment",
@@ -200,20 +201,16 @@ const addRole = () => {
         message: "What is the Department you would like to add?",
       },        
     ])
-    .then((answer) => {
-      console.log(answer);
-      let roleID = answer.roleID;
-      let title = answer.title;
-      let salary = answer.salary;
-      let departmentID = answer.departmentID
-
-      const query = `INSERT INTO role (id, title, salary, department_id) VALUES ('${roleID}', '${title}', '${salary}', '${departmentID}')`;
-      connection.query(query, (err, res) => {
+    .then(function(res) {
+      const title = res.title;
+      const salary = res.salary;
+      const departmentID = res.departmentID;
+      const query = `INSERT INTO role (title, salary, department_id) VALUE ("${title}", "${salary}", "${departmentID}")`;
+      connection.query(query, function(err, res) {
         if (err) throw err;
         console.table(res);
-        runSearch();
+        start();
       });
-      
     });
 };
 
@@ -257,8 +254,11 @@ const updateEmployeeDepartment = () => {
 
 
 const budget = () => {
-
-
+    const query = connection.query(`SELECT department_id AS id, department.department_name AS department,SUM(salary) AS budget FROM role INNER JOIN department ON role.department_id = department.id GROUP BY role.department_id`, (err, res) => {
+    if (err) throw err;
+      console.table(res);
+      runSearch();
+  });
 };
 
 const removeEmployee = () => {
